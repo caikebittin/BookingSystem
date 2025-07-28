@@ -8,15 +8,15 @@ steps:
 - checkout: self
   persistCredentials: true
   clean: true
+  fetchDepth: 0  # Buscar todo o histórico
   
 - task: Bash@3
-  displayName: 'Fix detached HEAD and Sync to GitHub'
+  displayName: 'Complete Sync to GitHub'
   inputs:
     targetType: 'inline'
     script: |
       echo "=== FIXING DETACHED HEAD ==="
       git checkout -B master
-      git status
       
       echo "=== CONFIGURING GIT ==="
       git config --global user.email "ikee.bittin@gmail.com"
@@ -25,6 +25,10 @@ steps:
       echo "=== ADDING REMOTE ==="
       git remote remove github 2>/dev/null || true
       git remote add github https://$(GITHUB_PAT)@github.com/caikebittin/BookingSystem.git
+      
+      echo "=== CREATING CLEAN COMMIT ==="
+      git add .
+      git commit -m "Initial sync from Azure DevOps" --allow-empty
       
       echo "=== PUSHING TO GITHUB ==="
       git push github master:master --force
