@@ -10,17 +10,13 @@ steps:
   clean: true
   
 - task: Bash@3
-  displayName: 'Debug and Sync to GitHub'
+  displayName: 'Fix detached HEAD and Sync to GitHub'
   inputs:
     targetType: 'inline'
     script: |
-      # Debug info
-      echo "=== DEBUG INFO ==="
-      pwd
-      ls -la
+      echo "=== FIXING DETACHED HEAD ==="
+      git checkout -B master
       git status
-      git branch -a
-      git log --oneline -3
       
       echo "=== CONFIGURING GIT ==="
       git config --global user.email "ikee.bittin@gmail.com"
@@ -29,7 +25,6 @@ steps:
       echo "=== ADDING REMOTE ==="
       git remote remove github 2>/dev/null || true
       git remote add github https://$(GITHUB_PAT)@github.com/caikebittin/BookingSystem.git
-      git remote -v
       
       echo "=== PUSHING TO GITHUB ==="
-      git push github master:master --verbose
+      git push github master:master --force
