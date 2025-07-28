@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\BookingSystem.Communication\BookingSystem.Communication.csproj" />
+    <ProjectReference Include="..\..\Shared\BookingSystem.Exceptions\BookingSystem.Exceptions.csproj" />
+    <ProjectReference Include="..\BookingSystem.Domain\BookingSystem.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
