@@ -1,0 +1,34 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+  persistCredentials: true
+  clean: true
+  fetchDepth: 0  # Buscar todo o histórico
+  
+- task: Bash@3
+  displayName: 'Complete Sync to GitHub'
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo "=== FIXING DETACHED HEAD ==="
+      git checkout -B master
+      
+      echo "=== CONFIGURING GIT ==="
+      git config --global user.email "ikee.bittin@gmail.com"
+      git config --global user.name "Caike Bittin"
+      
+      echo "=== ADDING REMOTE ==="
+      git remote remove github 2>/dev/null || true
+      git remote add github https://$(GITHUB_PAT)@github.com/caikebittin/BookingSystem.git
+      
+      echo "=== CREATING CLEAN COMMIT ==="
+      git add .
+      git commit -m "Initial sync from Azure DevOps" --allow-empty
+      
+      echo "=== PUSHING TO GITHUB ==="
+      git push github master:master --force
