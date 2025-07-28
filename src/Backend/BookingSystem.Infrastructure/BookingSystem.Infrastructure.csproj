@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Backend\BookingSystem.Domain\BookingSystem.Domain.csproj" />
+    <ProjectReference Include="..\BookingSystem.Domain\BookingSystem.Domain.csproj" />
   </ItemGroup>
 
 </Project>
