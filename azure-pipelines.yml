@@ -7,20 +7,29 @@ pool:
 steps:
 - checkout: self
   persistCredentials: true
+  clean: true
   
 - task: Bash@3
-  displayName: 'Sync to GitHub'
+  displayName: 'Debug and Sync to GitHub'
   inputs:
     targetType: 'inline'
     script: |
+      # Debug info
+      echo "=== DEBUG INFO ==="
+      pwd
+      ls -la
+      git status
+      git branch -a
+      git log --oneline -3
+      
+      echo "=== CONFIGURING GIT ==="
       git config --global user.email "ikee.bittin@gmail.com"
       git config --global user.name "Caike Bittin"
       
-      # Remove remote se existir
+      echo "=== ADDING REMOTE ==="
       git remote remove github 2>/dev/null || true
-      
-      # Adiciona remote
       git remote add github https://$(GITHUB_PAT)@github.com/caikebittin/BookingSystem.git
+      git remote -v
       
-      # Primeiro push com --set-upstream para criar a branch
-      git push --set-upstream github master
+      echo "=== PUSHING TO GITHUB ==="
+      git push github master:master --verbose
