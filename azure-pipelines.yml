@@ -1,6 +1,6 @@
 # Pipeline para sincronizar Azure Repos com GitHub
 trigger:
-- main  # ou master, dependendo da sua branch principal
+- master  # ou master, dependendo da sua branch principal
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -19,7 +19,7 @@ steps:
       git config --global user.name "Caike Bittin"
       
       # Adicionar remote do GitHub (substitua pela URL do seu repo)
-      git remote add github https://$(GITHUB_TOKEN)@github.com/caikebittin/BookingSystem.git
+      git remote add github https://$(GITHUB_PAT)@github.com/caikebittin/BookingSystem.git
       
       # Fazer push para GitHub
       git push github HEAD:master --force
