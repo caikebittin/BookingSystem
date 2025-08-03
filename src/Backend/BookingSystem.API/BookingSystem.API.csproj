@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Shared\BookingSystem.Communication\BookingSystem.Communication.csproj" />
     <ProjectReference Include="..\..\Shared\BookingSystem.Exceptions\BookingSystem.Exceptions.csproj" />
     <ProjectReference Include="..\BookingSystem.Application\BookingSystem.Application.csproj" />
