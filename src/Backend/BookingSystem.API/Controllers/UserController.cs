@@ -1,4 +1,5 @@
-﻿using BookingSystem.Communication.Requests;
+﻿using BookingSystem.Application.UseCases.User.Register;
+using BookingSystem.Communication.Requests;
 using BookingSystem.Communication.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,10 @@ public class UserController : ControllerBase
     [ProducesResponseType(typeof(ResponseRegisteredUserJson), StatusCodes.Status201Created)]
     public IActionResult Register(RequestRegisterUserJson request)
     {
-        return Created();
+        var useCase = new RegisterUserUseCase();
+
+        var result = useCase.Execute(request);
+
+        return Created(string.Empty, result);
     }
 }
