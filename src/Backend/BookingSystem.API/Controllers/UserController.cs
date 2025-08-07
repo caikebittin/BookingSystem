@@ -16,7 +16,8 @@ public class UserController : ControllerBase
             var useCase = new RegisterUserUseCase();
 
             var result = useCase.Execute(request);
-
+            
+        // alo alo test commit
             return Created(string.Empty, result);
     }
 }
