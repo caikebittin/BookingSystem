@@ -1,4 +1,5 @@
-﻿using BookingSystem.Communication.Requests;
+﻿using BookingSystem.Application.Services.AutoMapper;
+using BookingSystem.Communication.Requests;
 using BookingSystem.Communication.Responses;
 using BookingSystem.Exceptions.ExceptionsBase;
 
@@ -9,7 +10,12 @@ public class RegisterUserUseCase
     {
         Validate(request);
 
-        //mapear request em uma entidade
+        var autoMapper = new AutoMapper.MapperConfiguration(options =>
+        {
+            options.AddProfile(new AutoMapping());
+        }).CreateMapper();
+
+        var user = autoMapper.Map<Domain.Entities.User>(request);
 
         //criptografia da senha 
 
