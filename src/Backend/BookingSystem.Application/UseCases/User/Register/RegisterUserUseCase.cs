@@ -2,12 +2,15 @@
 using BookingSystem.Application.Services.Cryptography;
 using BookingSystem.Communication.Requests;
 using BookingSystem.Communication.Responses;
+using BookingSystem.Domain.Repositories.User;
 using BookingSystem.Exceptions.ExceptionsBase;
 
 namespace BookingSystem.Application.UseCases.User.Register;
 public class RegisterUserUseCase
 {
-    public ResponseRegisteredUserJson Execute(RequestRegisterUserJson request)
+    private readonly IUserWriteOnlyRepository _writeOnlyRepository;
+    private readonly IUserReadOnlyRepository _readOnlyRepository;
+    public async Task<ResponseRegisteredUserJson> Execute(RequestRegisterUserJson request)
     {
         var passwordEncryption = new PasswordEncripter();
         var autoMapper = new AutoMapper.MapperConfiguration(options =>
@@ -21,7 +24,7 @@ public class RegisterUserUseCase
 
         user.Password = passwordEncryption.Ecrypt(request.Password);
 
-        //salvar no banco de dados
+        await _writeOnlyRepository.Add(user);
 
         return new ResponseRegisteredUserJson
         {
@@ -29,7 +32,7 @@ public class RegisterUserUseCase
         };
     }
 
-    private void Validate(RequestRegisterUserJson request)
+    private void Validate(RequestRegisterUserJson request) 
     {
         var validator = new RegisterUserValidator();
 
