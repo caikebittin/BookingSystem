@@ -1,7 +1,6 @@
 ﻿using BookingSystem.Application.UseCases.User.Register;
 using BookingSystem.Communication.Requests;
 using BookingSystem.Communication.Responses;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingSystem.API.Controllers;
@@ -11,13 +10,12 @@ public class UserController : ControllerBase
 {
     [HttpPost]
     [ProducesResponseType(typeof(ResponseRegisteredUserJson), StatusCodes.Status201Created)]
-    public IActionResult Register(RequestRegisterUserJson request)
+    public async Task<IActionResult> Register(
+        [FromServices] IRegisterUserUseCase useCase,
+        [FromBody] RequestRegisterUserJson request)
     {
-            var useCase = new RegisterUserUseCase();
+        var result = await useCase.Execute(request);
 
-            var result = useCase.Execute(request);
-            
-        // alo alo test commit
-            return Created(string.Empty, result);
+        return Created(string.Empty, result);
     }
 }
