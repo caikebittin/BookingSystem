@@ -1,29 +1,32 @@
-﻿using BookingSystem.Domain.Repositories.User;
+﻿using BookingSystem.Domain.Repositories;
+using BookingSystem.Domain.Repositories.User;
 using BookingSystem.Infrastructure.DataAccess;
 using BookingSystem.Infrastructure.DataAccess.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BookingSystem.Infrastructure;
 public static class DepedencyInjectionExtension
 {
-    public static void AddInfrastructure(this IServiceCollection services)
+    public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        AddDbContext(services);
-        AddRepositories(services);
+        AddDbContext(services, configuration);
+        AddRepositories(services, configuration);
     }
 
-    private static void AddDbContext(IServiceCollection services)
+    private static void AddDbContext(IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = "Data Source=(local);Initial Catalog=BookingSystem;User ID=sa;Password=Ca123xcv@!;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;";
+        var connectionString = configuration.GetConnectionString("ConnectionSQLServer");
         
         services.AddDbContext<BookingSystemDbContext>(dbContextOptions =>
         {
             dbContextOptions.UseSqlServer(connectionString);
         });
     }
-    private static void AddRepositories(IServiceCollection services)
+    private static void AddRepositories(IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserWriteOnlyRepository, UserRepository>();
         services.AddScoped<IUserReadOnlyRepository, UserRepository>();
     }

@@ -1,30 +1,45 @@
-﻿using BookingSystem.Application.Services.AutoMapper;
+﻿using AutoMapper;
 using BookingSystem.Application.Services.Cryptography;
 using BookingSystem.Communication.Requests;
 using BookingSystem.Communication.Responses;
+using BookingSystem.Domain.Repositories;
 using BookingSystem.Domain.Repositories.User;
 using BookingSystem.Exceptions.ExceptionsBase;
 
 namespace BookingSystem.Application.UseCases.User.Register;
-public class RegisterUserUseCase
+public class RegisterUserUseCase : IRegisterUserUseCase
 {
     private readonly IUserWriteOnlyRepository _writeOnlyRepository;
     private readonly IUserReadOnlyRepository _readOnlyRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IMapper _mapper;
+    private readonly PasswordEncripter _passwordEncripter;
+
+    public RegisterUserUseCase(
+        IUserWriteOnlyRepository writeOnlyRepository, 
+        IUserReadOnlyRepository readOnlyRepository,
+        IUnitOfWork unitOfWork,
+        PasswordEncripter passwordEncripter,
+        IMapper mapper
+        )
+    {
+        _writeOnlyRepository = writeOnlyRepository;
+        _readOnlyRepository = readOnlyRepository;
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+        _passwordEncripter = passwordEncripter;
+    }
+
     public async Task<ResponseRegisteredUserJson> Execute(RequestRegisterUserJson request)
     {
-        var passwordEncryption = new PasswordEncripter();
-        var autoMapper = new AutoMapper.MapperConfiguration(options =>
-        {
-            options.AddProfile(new AutoMapping());
-        }).CreateMapper();
-
         Validate(request);
 
-        var user = autoMapper.Map<Domain.Entities.User>(request);
+        var user = _mapper.Map<Domain.Entities.User>(request);
 
-        user.Password = passwordEncryption.Ecrypt(request.Password);
+        user.Password = _passwordEncripter.Ecrypt(request.Password);
 
         await _writeOnlyRepository.Add(user);
+        await _unitOfWork.Commit();
 
         return new ResponseRegisteredUserJson
         {
