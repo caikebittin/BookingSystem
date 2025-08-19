@@ -1,4 +1,5 @@
 ﻿using BookingSystem.Application.Services.AutoMapper;
+using Microsoft.Extensions.Configuration;
 using BookingSystem.Application.Services.Cryptography;
 using BookingSystem.Application.UseCases.User.Register;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 namespace BookingSystem.Application;
 public static class DepedencyInjectionExtension
 {
-    public static void AddApplication(this IServiceCollection services)
+    public static void AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
-        AddPasswordEncrpter(services);
+        AddPasswordEncrpter(services, configuration);
         AddAutoMapper(services);
         AddUseCases(services);
     }
@@ -26,8 +27,9 @@ public static class DepedencyInjectionExtension
         services.AddScoped<IRegisterUserUseCase, RegisterUserUseCase>();
     }
 
-    private static void AddPasswordEncrpter(IServiceCollection services)
+    private static void AddPasswordEncrpter(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped(option => new PasswordEncripter());
+        var additionalKey = configuration.GetValue<string>("Settings:Password:AdditionalKey");
+        services.AddScoped(option => new PasswordEncripter(additionalKey!));
     }
 }

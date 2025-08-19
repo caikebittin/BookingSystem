@@ -4,10 +4,12 @@ using System.Text;
 namespace BookingSystem.Application.Services.Cryptography;
 public class PasswordEncripter
 {
+    private readonly string _additionalKey;
+    public PasswordEncripter(string additionalKey) => _additionalKey = additionalKey;
+
     public string Ecrypt(string password)
     {
-        var additionalKey = "teste";
-        var newPassword = $"{password}{additionalKey}";
+        var newPassword = $"{password}{_additionalKey}";
         
         var bytes = Encoding.UTF8.GetBytes(newPassword);
         var hashBytes = SHA512.HashData(bytes);
